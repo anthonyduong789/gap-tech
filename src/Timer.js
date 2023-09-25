@@ -9,18 +9,24 @@ function Timer() {
  
   //  this part below is used for the long timer
    const [seconds, setSeconds] = useState(0);
+   const [minutes, setMinutes] = useState(0);
+   const [hours, setHours] = useState(0);
+   
    const [isActive, setIsActive] = useState(false);
-   const [duration, setDuration] = useState(10);
+   const [duration, setDuration] = useState(1000);
   
    // Below will handle the random timer for the gap effect   
    const [random_seconds, setRandomSeconds] = useState(0);
+   const [min, setMin] = useState(5);
+   const [max, setMax] = useState(10);
+
    const [random_duration, setRandomDuration] = useState(0);
 
   //  below will handle all 10 second rest break
   let rest_duration = 10; 
   const [show, setShow] = useState(false);
   const [rest_sec, setRest_Sec] = useState(rest_duration);
-
+   
    function paused () {
      return (
        
@@ -28,11 +34,17 @@ function Timer() {
      );
    }
 
-   const handleInputChange_1 = (e) => {
+   const handleInputMinRange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
-      setRandomDuration(value);
+      setMin(value);
       // console.log(random_duration_time);
+    }
+   }
+   const handleInputMaxRange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setMax(value);
     }
    }
   // Below will handle the scenario when the random timer is finished displaying to the 
@@ -52,15 +64,23 @@ function Timer() {
   //  total time=> duration
   // random time = > random_duration
 
-
+   function generate(min, max){
+    return Math.floor(Math.random()*(max-min+1))+min;
+   } 
+   useEffect(()=> {
+    setMin(min);
+   },[min]);
+   useEffect(()=> {
+    setMax(max);
+   },[max]);
    useEffect(()=> {
     setSeconds(duration);
    },[duration]); 
 
    useEffect(()=> {
-    setRandomSeconds(random_duration);
-   },[random_duration]);
-
+    setRandomSeconds(random_seconds);
+   },[random_seconds]);
+   
    useEffect(() => {
 
        let interval;
@@ -69,10 +89,12 @@ function Timer() {
            interval = setInterval(() => {
 
             if (random_seconds == 0 && !show){
-              console.log("hey");
-
-              setRandomDuration(Math.floor(Math.random() * (20 - 10) + 10));
-              setRandomSeconds(random_duration);
+              // setRandomDuration(Math.floor(Math.random() * (max - min) + min));
+              // console.log(min);
+              // console.log(max);
+              let random_number = generate(min, max);
+              setRandomSeconds(random_number);
+              console.log(random_number);
               setShow(true);
             }else if (show==false){
               setRandomSeconds(prevSeconds => prevSeconds - 1);
@@ -86,7 +108,8 @@ function Timer() {
             if (seconds == 0 ){
               setIsActive(false);
               setSeconds(duration);
-              setRandomSeconds(random_duration);
+              // const randomInteger = Math.floor(Math.random() * (max - min + 1) + min);
+              setRandomSeconds(generate(min, max));
               setShow(true);
             }else{
               setSeconds(prevSeconds => prevSeconds - 1);
@@ -101,7 +124,7 @@ function Timer() {
    }, [isActive, seconds]);
 
    const handleStart = () => {
-      duration_time = duration;
+      duration_time = duration ;
       setIsActive(true);
    }
 
@@ -120,18 +143,27 @@ function Timer() {
        
        <div>
            <paused/>
-           <p>Elapsed time: {seconds} seconds</p>
+           <h1>Total Time Left: {seconds} seconds</h1>
            <p>random interval Timer: {random_seconds} duration</p>
            <p>pause timer: {rest_sec}</p>
+
            <label>
+            <p>interval range</p>
            <input 
             type="text" 
-            value={random_duration}
-            onChange={handleInputChange_1} 
+            value={min}
+            onChange={handleInputMinRange} 
+            placeholder="Enter a number"
+          />
+          <input 
+            type="text" 
+            value={max}
+            onChange={handleInputMaxRange} 
             placeholder="Enter a number"
           />
            </label>
            <label>
+            <p>duration</p>
            <input 
             type="text" 
             value={duration} 
