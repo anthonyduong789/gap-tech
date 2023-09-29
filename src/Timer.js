@@ -230,8 +230,8 @@ function Timer() {
           <h1>Total Time Left: {seconds} seconds</h1>
           <h1>next rest: {random_seconds} duration</h1>
           <p>pause timer: {rest_sec}</p>
-          <button class = "button" onClick={handleStart}>Start/stop</button>
-          <button class = "button" onClick={handleReset}>Reset</button>
+          <button class = "button" id = "start_stop" onClick={handleStart}>Start/stop</button>
+          <button class = "button" id = "reset" onClick={handleReset}>Reset</button>
         </div>
       ) : null}
      
