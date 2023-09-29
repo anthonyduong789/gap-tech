@@ -177,6 +177,25 @@ function Timer() {
   };
 
   const handlesave = () => {
+    
+    if(min_wait>max_wait){
+      SetShow_error_1(true);
+      SetShow_min(false);
+    }else{
+      SetShow_error_1(false);
+      SetShow_min(true);
+    }
+    if(max_wait > duration_wait){
+      SetShow_error_2(true);
+      SetShow_error_3(true);
+      SetShow_max(false);
+      SetShow_duration(false);
+    }else{
+      SetShow_error_2(false);
+      SetShow_error_3(false);
+      SetShow_max(true);
+      SetShow_duration(true);
+    }
     if (min_wait < max_wait && max_wait < duration_wait) setMin(min_wait);
     setMax(max_wait);
     setDuration(duration_wait);
@@ -186,6 +205,7 @@ function Timer() {
   const [show_max, SetShow_max] = useState(true);
   const [show_duration, SetShow_duration] = useState(true);
   //
+ 
   const [show_error_1, SetShow_error_1] = useState(false);
   const [show_error_2, SetShow_error_2] = useState(false);
   const [show_error_3, SetShow_error_3] = useState(false);
@@ -202,24 +222,30 @@ function Timer() {
 
   return (
     <div class="main_div">
-      <button onClick={handleNavbar}>settings</button>
+      <div class ="main-box">
+     
       {show_timer ? (
         <div class="homepage-background">
+          <button class = "button" onClick={handleNavbar}>settings</button>
           <h1>Total Time Left: {seconds} seconds</h1>
-          <p>random interval Timer: {random_seconds} duration</p>
+          <h1>next rest: {random_seconds} duration</h1>
           <p>pause timer: {rest_sec}</p>
-          <button onClick={handleStart}>Start/stop</button>
-          <button onClick={handleReset}>Reset</button>
+          <button class = "button" onClick={handleStart}>Start/stop</button>
+          <button class = "button" onClick={handleReset}>Reset</button>
         </div>
       ) : null}
      
       {show_setting ? (
         <div class="settings-background">
           <div class = "settings-box">
+            <button class = "button" onClick={handleNavbar}>settings</button>
             <div class = "setting_items">
                 {
                   show_min?<h1 id="min_text">min interval time</h1>:null
                 }
+                 {show_error_1?<div class = "error_message">
+              <h3>min interval time must be less than max</h3>
+            </div>:null}
                 <input
                   type="text"
                   value={min_wait}
@@ -231,6 +257,9 @@ function Timer() {
                 {
                   show_max? <h1>max interval time</h1>:null
                 }
+                {show_error_2?<div class="error_message">
+              <h3>max interval time must be less than duration</h3>
+            </div>:null}
                 <input
                   type="text"
                   value={max_wait}
@@ -242,6 +271,9 @@ function Timer() {
                 {
                   show_duration?<h1>duration of timer</h1>:null
                 }
+                  {show_error_3?<div class = "error_message">
+              <h3>duration must be a greater than max</h3>
+            </div>:null}
                 <input
                   type="text"
                   value={duration_wait}
@@ -249,10 +281,14 @@ function Timer() {
                   placeholder="Enter a number"
                 />
             </div>
-            <div><button onClick={handlesave}>save</button></div>
+            <div><button class ="button" id="save" onClick={handlesave}>save</button></div>
+           
+            
+          
           </div>
         </div>
       ) : null}
+    </div>
     </div>
   );
 }

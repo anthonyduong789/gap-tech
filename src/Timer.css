@@ -1,17 +1,58 @@
 ul{
     list-style-type: none;
 }
-.settings-background {
-    height: 70vh;
+.main_div{
+    display: flex;
+    justify-content: center;
+}
+.main-box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    padding-bottom: 100px;
+    /* width: 40%;
+    height: 50vh; */
     border: 10px solid black;
     background-color: lightblue;
 }
+/* .settings-background { */
+    /* display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    padding-bottom: 100px; */
+    /* width: 40%;
+    height: 50vh; */
+    /* border: 10px solid black;
+    background-color: lightblue; */
+/* } */
 .setting-box{
     display: flex;
+    align-items: center;
+    
     height: 100%;
     
 }
 .setting_items{
-    font-size: 10px;
+    font-size: 1%vw;
+}
+.error_message{
+    background-color: red;
+}
 
+/* below will be for the regular homepage of the timer */
+
+.button {
+    background-color: #4CAF50; /* Green */
+    border: 1px solid black;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+#save{
+    margin: 30px;
 }
