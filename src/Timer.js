@@ -68,7 +68,7 @@ function Timer() {
   const handleInputMinRange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
-        setMin_wait(Number(value));
+      setMin_wait(Number(value));
       // value needed to be converted into number because original was just a string.
       // console.log(random_duration_time);
     }
@@ -175,77 +175,84 @@ function Timer() {
     setShow(false);
     setRest_Sec(rest_duration);
   };
+
   const handlesave = () => {
-    if(min_wait < max_wait && max_wait < duration_wait)
-      setMin(min_wait);
-      setMax(max_wait);
-      setDuration(duration_wait);
-      
-  }
+    if (min_wait < max_wait && max_wait < duration_wait) setMin(min_wait);
+    setMax(max_wait);
+    setDuration(duration_wait);
+  };
+  // below will show the text for settings for the min max and duration
+  const [show_min, SetShow_min] = useState(true);
+  const [show_max, SetShow_max] = useState(true);
+  const [show_duration, SetShow_duration] = useState(true);
+  //
+  const [show_error_1, SetShow_error_1] = useState(false);
+  const [show_error_2, SetShow_error_2] = useState(false);
+  const [show_error_3, SetShow_error_3] = useState(false);
+
+  // below will handle making the settings for the min max duration appear and disappear
+  // below will handle the timer appearing and disappearing
+
+  const [show_setting, SetShow_settings] = useState(false);
+  const [show_timer, SetShow_timer] = useState(true);
+  const handleNavbar = () => {
+    SetShow_settings(!show_setting);
+    SetShow_timer(!show_timer);
+  };
 
   return (
-    <div>
-      <div class="homepage-background">
-        <h1>Total Time Left: {seconds} seconds</h1>
-        <p>random interval Timer: {random_seconds} duration</p>
-        <p>pause timer: {rest_sec}</p>
-        <button onClick={handleStart}>Start/stop</button>
-        <button onClick={handleReset}>Reset</button>
-      </div>
-
-      
-      <div class="navigation">
-        <input type="checkbox" class="nav__checkbox" id="nav-toggle" />
-        <label for="nav-toggle" class="nav__button">
-          <span class="nav__icon"></span>
-        </label>
-        <div class="nav__background">&nbsp;</div>
-        <div class="navigation__nav">
-          <ul class="navigation__list">
-            <li class="navigation__item">
-              <div>
-              <h1 id ="min_text">Min</h1>
-              <h1 id ="min_error" class ="appear">Min_error</h1>
-              <input
+    <div class="main_div">
+      <button onClick={handleNavbar}>settings</button>
+      {show_timer ? (
+        <div class="homepage-background">
+          <h1>Total Time Left: {seconds} seconds</h1>
+          <p>random interval Timer: {random_seconds} duration</p>
+          <p>pause timer: {rest_sec}</p>
+          <button onClick={handleStart}>Start/stop</button>
+          <button onClick={handleReset}>Reset</button>
+        </div>
+      ) : null}
+     
+      {show_setting ? (
+        <div class="settings-background">
+          <div class = "settings-box">
+            <div class = "setting_items">
+                {
+                  show_min?<h1 id="min_text">min interval time</h1>:null
+                }
+                <input
                   type="text"
                   value={min_wait}
                   onChange={handleInputMinRange}
                   placeholder="Enter a number"
                 />
-              </div>
-              <div>  
-              <h1>max</h1>
-              <input
+            </div>
+            <div class = "setting_items" id="max-box">
+                {
+                  show_max? <h1>max interval time</h1>:null
+                }
+                <input
                   type="text"
                   value={max_wait}
                   onChange={handleInputMaxRange}
                   placeholder="Enter a number"
                 />
-              </div>
-            </li>
-            <li class="navigation__item">
-              <div>
-              <h1>duration</h1>
+            </div>
+            <div class="setting_items" id="duration-setting-box">
+                {
+                  show_duration?<h1>duration of timer</h1>:null
+                }
                 <input
                   type="text"
                   value={duration_wait}
                   onChange={handleInputChange}
                   placeholder="Enter a number"
                 />
-              </div>
-            </li>
-            <li class ="navigation__item">
-              <div>
-                <button onClick={handlesave}>save</button>
-              </div>
-              
-            </li>
-          </ul>
+            </div>
+            <div><button onClick={handlesave}>save</button></div>
+          </div>
         </div>
-      </div>
-
-      
-    
+      ) : null}
     </div>
   );
 }
