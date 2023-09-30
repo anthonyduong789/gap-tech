@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import sound from "./sound/emergency-alarm.mp3";
+import pause from "./images/pause-100.png";
+import start from "./images/start-100.png";
+import restart from "./images/restart-100.png";
+import setting from "./images/settings-100.png";
+
 import "./Timer.css";
 function Timer() {
   //audio part
@@ -54,6 +59,10 @@ function Timer() {
   const [show, setShow] = useState(false);
   const [rest_sec, setRest_Sec] = useState(rest_duration);
 
+  // configuires the start and stop button
+
+  const [config_play, SetConfig_play] = useState(true);
+  const [config_pause, SetConfig_pause] = useState  (false);
   function paused() {
     return show ? <h1>take a break</h1> : null;
   }
@@ -155,6 +164,8 @@ function Timer() {
   }, [isActive, seconds]);
 
   const handleStart = () => {
+    SetConfig_pause(!config_pause);
+    SetConfig_play(!config_play);
     if (isActive == false && session == false) {
       duration_time = duration;
       setRandomSeconds(random_duration);
@@ -177,20 +188,19 @@ function Timer() {
   };
 
   const handlesave = () => {
-    
-    if(min_wait>max_wait){
+    if (min_wait > max_wait) {
       SetShow_error_1(true);
       SetShow_min(false);
-    }else{
+    } else {
       SetShow_error_1(false);
       SetShow_min(true);
     }
-    if(max_wait > duration_wait){
+    if (max_wait > duration_wait) {
       SetShow_error_2(true);
       SetShow_error_3(true);
       SetShow_max(false);
       SetShow_duration(false);
-    }else{
+    } else {
       SetShow_error_2(false);
       SetShow_error_3(false);
       SetShow_max(true);
@@ -205,7 +215,7 @@ function Timer() {
   const [show_max, SetShow_max] = useState(true);
   const [show_duration, SetShow_duration] = useState(true);
   //
- 
+
   const [show_error_1, SetShow_error_1] = useState(false);
   const [show_error_2, SetShow_error_2] = useState(false);
   const [show_error_3, SetShow_error_3] = useState(false);
@@ -220,75 +230,90 @@ function Timer() {
     SetShow_timer(!show_timer);
   };
 
+  
   return (
     <div class="main_div">
-      <div class ="main-box">
-     
-      {show_timer ? (
-        <div class="homepage-background">
-          <button class = "button" onClick={handleNavbar}>settings</button>
-          <h1>Total Time Left: {seconds} seconds</h1>
-          <h1>next rest: {random_seconds} duration</h1>
-          <p>pause timer: {rest_sec}</p>
-          <button class = "button" id = "start_stop" onClick={handleStart}>Start/stop</button>
-          <button class = "button" id = "reset" onClick={handleReset}>Reset</button>
-        </div>
-      ) : null}
-     
-      {show_setting ? (
-        <div class="settings-background">
-          <div class = "settings-box">
-            <button class = "button" onClick={handleNavbar}>settings</button>
-            <div class = "setting_items">
-                {
-                  show_min?<h1 id="min_text">min interval time</h1>:null
-                }
-                 {show_error_1?<div class = "error_message">
-              <h3>min interval time must be less than max</h3>
-            </div>:null}
+      <div class="main-box">
+        {show_timer ? (
+          <div class="homepage-background">
+            <button class="button" onClick={handleNavbar}>
+              <img src = {setting}/>
+            </button>
+            <h1>Total Time Left: {seconds} seconds</h1>
+            <h1>next rest: {random_seconds} duration</h1>
+            <p>pause timer: {rest_sec}</p>
+            
+            <button class="button" id="start_stop" onClick={handleStart}>
+              {
+                config_pause?<img src={pause} />:null
+              } 
+              {
+                config_play?<img src={start} />:null
+              }
+              </button>
+            <button class="button" id="reset" onClick={handleReset}>
+              <img src={restart} />
+            </button>
+          </div>
+        ) : null}
+
+        {show_setting ? (
+          <div class="settings-background">
+            <div class="settings-box">
+              <button class="button" onClick={handleNavbar}>
+                <img src = {setting} />
+              </button>
+              <div class="setting_items">
+                {show_min ? <h1 id="min_text">min interval time</h1> : null}
+                {show_error_1 ? (
+                  <div class="error_message">
+                    <h3>min interval time must be less than max</h3>
+                  </div>
+                ) : null}
                 <input
                   type="text"
                   value={min_wait}
                   onChange={handleInputMinRange}
                   placeholder="Enter a number"
                 />
-            </div>
-            <div class = "setting_items" id="max-box">
-                {
-                  show_max? <h1>max interval time</h1>:null
-                }
-                {show_error_2?<div class="error_message">
-              <h3>max interval time must be less than duration</h3>
-            </div>:null}
+              </div>
+              <div class="setting_items" id="max-box">
+                {show_max ? <h1>max interval time</h1> : null}
+                {show_error_2 ? (
+                  <div class="error_message">
+                    <h3>max interval time must be less than duration</h3>
+                  </div>
+                ) : null}
                 <input
                   type="text"
                   value={max_wait}
                   onChange={handleInputMaxRange}
                   placeholder="Enter a number"
                 />
-            </div>
-            <div class="setting_items" id="duration-setting-box">
-                {
-                  show_duration?<h1>duration of timer</h1>:null
-                }
-                  {show_error_3?<div class = "error_message">
-              <h3>duration must be a greater than max</h3>
-            </div>:null}
+              </div>
+              <div class="setting_items" id="duration-setting-box">
+                {show_duration ? <h1>duration of timer</h1> : null}
+                {show_error_3 ? (
+                  <div class="error_message">
+                    <h3>duration must be a greater than max</h3>
+                  </div>
+                ) : null}
                 <input
                   type="text"
                   value={duration_wait}
                   onChange={handleInputChange}
                   placeholder="Enter a number"
                 />
+              </div>
+              <div>
+                <button class="button" id="save" onClick={handlesave}>
+                  save
+                </button>
+              </div>
             </div>
-            <div><button class ="button" id="save" onClick={handlesave}>save</button></div>
-           
-            
-          
           </div>
-        </div>
-      ) : null}
-    </div>
+        ) : null}
+      </div>
     </div>
   );
 }
