@@ -42,15 +42,15 @@ function Timer() {
   const [hours, setHours] = useState(0);
 
   const [isActive, setIsActive] = useState(false);
-  const [duration, setDuration] = useState(1000);
+  const [duration, setDuration] = useState(1800);
   const [session, setSession] = useState(false);
   //^session will keep everything running in the same session when paused if off will be able to
   //  reset all the values to the new ones
 
   // Below will handle the random timer for the gap effect
   const [random_seconds, setRandomSeconds] = useState(0);
-  const [min, setMin] = useState(5);
-  const [max, setMax] = useState(10);
+  const [min, setMin] = useState(60);
+  const [max, setMax] = useState(300);
 
   const [random_duration, setRandomDuration] = useState(0);
 
@@ -70,9 +70,9 @@ function Timer() {
   // plays the sound for a second
 
   // below handles the values put in before being saved to the actual timer values
-  const [min_wait, setMin_wait] = useState(0);
-  const [max_wait, setMax_wait] = useState(10);
-  const [duration_wait, setDuration_wait] = useState(100);
+  const [min_wait, setMin_wait] = useState(1);
+  const [max_wait, setMax_wait] = useState(5);
+  const [duration_wait, setDuration_wait] = useState(30);
 
   const handleInputMinRange = (e) => {
     const value = e.target.value;
@@ -152,6 +152,7 @@ function Timer() {
           generate(min, max);
           setRandomSeconds(random_duration);
           setShow(true);
+          handleReset();
         } else {
           setSeconds((prevSeconds) => prevSeconds - 1);
         }
@@ -180,11 +181,14 @@ function Timer() {
   };
 
   const handleReset = () => {
+    SetConfig_pause(false);
+    SetConfig_play(true);
     setIsActive(false);
     setSession(false);
     setSeconds(duration);
     setShow(false);
     setRest_Sec(rest_duration);
+    
   };
 
   const handlesave = () => {
@@ -206,9 +210,11 @@ function Timer() {
       SetShow_max(true);
       SetShow_duration(true);
     }
-    if (min_wait < max_wait && max_wait < duration_wait) setMin(min_wait);
-    setMax(max_wait);
-    setDuration(duration_wait);
+    if (min_wait < max_wait && max_wait < duration_wait) 
+    setMin(min_wait*60);
+    setMax(max_wait*60);
+    setDuration(duration_wait*60);
+    handleReset();
   };
   // below will show the text for settings for the min max and duration
   const [show_min, SetShow_min] = useState(true);
@@ -230,17 +236,32 @@ function Timer() {
     SetShow_timer(!show_timer);
   };
 
-  
+  function Display_time(seconds){
+    const secs = seconds%60;
+    const minutes = Math.floor(seconds / 60) ;
+    let min_display = (minutes > 9 ? minutes: '0' + minutes);
+    let secs_display = (secs > 9 ? secs: '0' + secs);
+    return `${min_display}:${secs_display}`;
+  }
+  let timeDisplay = Display_time(seconds);
+  useEffect(() => {
+    timeDisplay = Display_time(seconds);
+  }, [seconds]);
+  let nextRestDisplay = Display_time(random_seconds);
+  useEffect(() => {
+    nextRestDisplay = Display_time(random_seconds);
+  }, [random_seconds]);
   return (
-    <div class="main_div">
+    // <div className = {`main_div ${config_pause ? 'active' : ''}`}>
+    <div className={`main_div ${config_pause ?  'color_1' : ''} ${config_pause ?  'color_2' : ''}`}>
       <div class="main-box">
         {show_timer ? (
           <div class="homepage-background">
             <button class="button" onClick={handleNavbar}>
-              <img src = {setting}/>
+              <img src = {setting} class= "setting"/>
             </button>
-            <h1>Total Time Left: {seconds} seconds</h1>
-            <h1>next rest: {random_seconds} duration</h1>
+            <h1>Time Left: {timeDisplay} </h1>
+            <h1>next rest: {nextRestDisplay} duration</h1>
             <p>pause timer: {rest_sec}</p>
             
             <button class="button" id="start_stop" onClick={handleStart}>
@@ -261,16 +282,17 @@ function Timer() {
           <div class="settings-background">
             <div class="settings-box">
               <button class="button" onClick={handleNavbar}>
-                <img src = {setting} />
+                <img class ="setting" src = {setting} />
               </button>
               <div class="setting_items">
                 {show_min ? <h1 id="min_text">min interval time</h1> : null}
                 {show_error_1 ? (
                   <div class="error_message">
-                    <h3>min interval time must be less than max</h3>
+                    <h1>min interval time must be less than max</h1>
                   </div>
                 ) : null}
                 <input
+                  class = "input_box"
                   type="text"
                   value={min_wait}
                   onChange={handleInputMinRange}
@@ -278,13 +300,14 @@ function Timer() {
                 />
               </div>
               <div class="setting_items" id="max-box">
-                {show_max ? <h1>max interval time</h1> : null}
+                {show_max ? <h1 class = "setting_messages">max interval time</h1> : null}
                 {show_error_2 ? (
-                  <div class="error_message">
-                    <h3>max interval time must be less than duration</h3>
+                  <div>
+                    <h1 class="setting_messages">max interval time must be less than duration</h1>
                   </div>
                 ) : null}
                 <input
+                  class = "input_box"
                   type="text"
                   value={max_wait}
                   onChange={handleInputMaxRange}
@@ -295,10 +318,11 @@ function Timer() {
                 {show_duration ? <h1>duration of timer</h1> : null}
                 {show_error_3 ? (
                   <div class="error_message">
-                    <h3>duration must be a greater than max</h3>
+                    <h1>duration must be a greater than max</h1>
                   </div>
                 ) : null}
                 <input
+                  class = "input_box"
                   type="text"
                   value={duration_wait}
                   onChange={handleInputChange}
